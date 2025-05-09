@@ -1,47 +1,37 @@
 import pandas as pd
 from sklearn.cluster import KMeans
 from sklearn.preprocessing import StandardScaler
-import matplotlib.pyplot as plt
 
-df = pd.read_csv("Data/synthetic_users.csv")
+# 1. 데이터 불러오기
+df = pd.read_csv("Data/synthetic_users_allAIusers.csv")
 
-features = ['ai_use_rate', 'avg_use_time_min', 'leisure_score', 'utility_score']
+# 2. 사용할 변수 선택
+features = ['avg_use_time_min', 'utility_score', 'leisure_score']
+X = df[features]
 
-# 정규화
+# 3. 정규화
 scaler = StandardScaler()
-X_scaled = scaler.fit_transform(df[features])
+X_scaled = scaler.fit_transform(X)
 
-# 최적 k 찾기 
-inertia = []
-K = range(2, 8)
-
-for k in K:
-    kmeans = KMeans(n_clusters=k, random_state=42)
-    kmeans.fit(X_scaled)
-    inertia.append(kmeans.inertia_)
-
-plt.plot(K, inertia, marker='o')
-plt.xlabel('Number of clusters (k)')
-plt.ylabel('Inertia')
-plt.title('Elbow Method for Optimal k')
-plt.grid()
-plt.show()
-
-# 플롯을 보고 적절한 k 선택 후 아래 코드에 대입
-k_opt = 3
-kmeans = KMeans(n_clusters=k_opt, n_init=10, random_state=42, verbose= 1)
+# 4. KMeans 군집화 (4개로 나눔)
+kmeans = KMeans(n_clusters=4, random_state=42, n_init=10)
 df['cluster'] = kmeans.fit_predict(X_scaled)
 
-cluster_name_map = {
-    0: 'Utilitarian User',
-    1: 'Balanced User',
-    2: 'Overconsuming User'
-}
-df['cluster'] = df['cluster'].map(cluster_name_map)
+# 5. 사용자 유형 분류 함수 정의
+def classify_user(row):
+    if row['utility_score'] >= 6.0 and row['avg_use_time_min'] >= 40:
+        return 'Strong Utilitarian'
+    elif row['utility_score'] >= 6.0 and row['avg_use_time_min'] < 40:
+        return 'Utilitarian'
+    elif row['leisure_score'] >= 6.0 and row['avg_use_time_min'] >= 40:
+        return 'Strong Overconsuming'
+    elif row['leisure_score'] >= 6.0 and row['avg_use_time_min'] < 40:
+        return 'Overconsuming'
+    else:
+        return 'Unclassified'
 
+# 6. 사용자 분류 적용
+df['classified_type'] = df.apply(classify_user, axis=1)
 
-print(df[features].info())
-print(df[features].isnull().sum())
-
-# 결과 저장
-df.to_csv("synthetic_users_with_clusters.csv", index=False)
+# 7. 결과 저장
+df.to_csv("kmeans_classified_users.csv", index=False, encoding='utf-8-sig')
