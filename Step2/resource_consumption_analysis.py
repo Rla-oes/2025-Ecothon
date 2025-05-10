@@ -17,15 +17,13 @@ X_scaled = scaler.fit_transform(df[features])
 df['daily_prompt_count'] = df['avg_use_time_min'] / 1.5
 
 # 5. 자원 소비량 계산 (프롬프트 수 * 자원 소모량)
-# 예시 값: 1프롬프트당 전력, 냉각수, 탄소 배출량
+# 예시 값: 1프롬프트당 전력, 냉각수
 power_per_prompt = 0.005  # kWh
 cooling_per_prompt = 500  # mL
-carbon_per_prompt = 52    # g (탄소 배출량)
 
 # 자원 소비량 계산
 df['total_power_consumed'] = df['daily_prompt_count'] * power_per_prompt  # kWh
 df['total_cooling_consumed'] = df['daily_prompt_count'] * cooling_per_prompt  # mL
-df['total_carbon_emission'] = df['daily_prompt_count'] * carbon_per_prompt  # g
 
 # 6. 결과 저장 (Step 2 폴더 안에 저장)
 df.to_csv("../Step2/synthetic_users_with_resource_consumption.csv", index=False)
