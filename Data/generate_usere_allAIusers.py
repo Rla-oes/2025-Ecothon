@@ -52,7 +52,6 @@ for i in range(N):
     elif mode == 'leisure':
         leisure += np.random.normal(10, 3)
         utility -= np.random.normal(5, 2)
-    # balanced는 그대로
 
     # 음수 방지
     leisure = max(leisure, 0)
@@ -64,7 +63,6 @@ for i in range(N):
 
     users.append(user)
 
-# 7. 저장
 # 7. 저장
 df = pd.DataFrame(users)
 df.to_csv("synthetic_users_allAIusers.csv", index=False, encoding='utf-8-sig')
