@@ -1,7 +1,7 @@
 import pandas as pd
 
 # Step 2에서 생성된 CSV 파일 경로
-df = pd.read_csv("../Step2/synthetic_users_with_resource_consumption.csv")
+df = pd.read_csv("Step2/synthetic_users_with_resource_consumption.csv")
 
 # 1kWh당 CO₂ 배출량 (발전단 기준)
 carbon_emission_per_kWh = 0.424  # CO₂ 배출 계수 (발전단)
@@ -16,7 +16,4 @@ df['total_carbon_emission'] = df['total_power_consumed'] * carbon_emission_per_k
 df['total_water_footprint'] = df['total_cooling_consumed'] * water_footprint_per_mL  # L
 
 # 결과 저장
-df.to_csv("../Step3/synthetic_users_with_carbon_and_water_footprint.csv", index=False)
-
-# 결과 확인
-print("탄소 배출량 및 물 소모 발자국 계산 완료! 👉 'synthetic_users_with_carbon_and_water_footprint.csv' 저장됨")
+df.to_csv("Step3/synthetic_users_with_carbon_and_water_footprint.csv", index=False)
