@@ -18,7 +18,7 @@ df['daily_prompt_count'] = df['avg_use_time_min'] / 1.5
 
 # 5. 자원 소비량 계산 (프롬프트 수 * 자원 소모량)
 # 예시 값: 1프롬프트당 전력, 냉각수
-power_per_prompt = 0.005  # kWh
+power_per_prompt = 0.0029  # kWh
 cooling_per_prompt = 15.14645  # mL
 
 # 자원 소비량 계산

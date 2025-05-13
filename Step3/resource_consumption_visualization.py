@@ -1,54 +1,39 @@
-import pandas as pd 
+import pandas as pd
 import matplotlib.pyplot as plt
+import numpy as np
 
-# 1. 데이터 불러오기
-df = pd.read_csv("Step3/synthetic_users_with_carbon_and_water_footprint.csv")
+# 데이터 불러오기
+df = pd.read_csv("Step3/synthetic_users_with_carbon_footprint.csv")
 
-# 2. 사용자 유형별 평균 탄소/물 소비량 계산
-grouped = df.groupby('classified_type')[['total_carbon_emission', 'total_water_footprint']].mean()
+# 사용자 유형별 평균 탄소 배출량 계산
+grouped = df.groupby('classified_type')['total_carbon_emission'].mean().sort_index()
 
-# 3. 순서 정렬 (선택)
-grouped = grouped.sort_index()
+# 인덱스 및 값 준비
+labels = grouped.index.tolist()
+values = grouped.values
+x = np.arange(len(labels))
 
-# ================================================
-# 첫 번째 그래프: Dual Axis (bar + line)
-# ================================================
-fig1, ax1 = plt.subplots(figsize=(10, 6))
+# 그래프 생성
+fig, ax = plt.subplots(figsize=(10, 10))
+bars = ax.bar(x, values, color='tab:red', alpha=0.7)
 
-# 첫 번째 Y축: Carbon Emission (bar)
-ax1.bar(grouped.index, grouped['total_carbon_emission'],
-        color='tab:red', alpha=0.6, label='Carbon Emission (kg CO₂)')
-ax1.set_xlabel("User Type")
-ax1.set_ylabel("Carbon Emission (kg CO₂)", color='tab:red')
-ax1.tick_params(axis='y', labelcolor='tab:red')
+# 축 설정
+#사용자 유형 1명이 하루에 발생시키는 평균 탄소 배출량 (kg CO₂) = y축
+ax.set_title("Carbon Emission per User Type")
+ax.set_xlabel("User Type")
+ax.set_ylabel("Carbon Emission (kg CO₂)")
+ax.set_xticks(x)
+ax.set_xticklabels(labels, rotation=15)
 
-# 두 번째 Y축: Water Footprint (line)
-ax2 = ax1.twinx()
-ax2.plot(grouped.index, grouped['total_water_footprint'],
-         color='tab:blue', marker='o', linewidth=2, label='Water Footprint (L)')
-ax2.set_ylabel("Water Footprint (L)", color='tab:blue')
-ax2.tick_params(axis='y', labelcolor='tab:blue')
+ax.ticklabel_format(style='plain', axis='y')
 
-# 제목 및 저장
-plt.title("Carbon and Water Footprint per User Type (Dual Axis)")
-fig1.tight_layout()
-plt.savefig("Step3/user_type_resource_dual_axis.png", dpi=300)
-plt.close()
-
-# ================================================
-# 두 번째 그래프: Multi Bar Chart
-# ================================================
-fig2, ax3 = plt.subplots(figsize=(10, 6))
-
-grouped.plot(kind='bar', ax=ax3, color=['tab:red', 'tab:blue'], alpha=0.7)
-plt.title("Carbon and Water Footprint per User Type")
-plt.xlabel("User Type")
-plt.ylabel("Resource Usage")
-plt.xticks(rotation=15)
-plt.legend(["Carbon Emission (kg CO₂)", "Water Footprint (L)"])
+#막대 위에 수치 표시 (소수점 6자리까지)
+for bar in bars:
+    height = bar.get_height()
+    ax.text(bar.get_x() + bar.get_width() / 2,
+            height + height * 0.01,
+            f"{height:.6f}", ha='center', va='bottom', fontsize=10)
 
 plt.tight_layout()
-plt.savefig("Step3/user_type_resource_bar_chart.png", dpi=300)
+plt.savefig("Step3/user_type_carbon_only_bar_chart_labeled_fixed.png", dpi=300)
 plt.close()
-
-print("✅ 사용자 유형 기준 그래프 2종 저장 완료 (Step3)")
