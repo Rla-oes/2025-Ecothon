@@ -63,11 +63,10 @@ plt.title("Water Usage Forecast with GPT Scenario (2022–2030)")
 plt.legend()
 plt.grid(True, linestyle="--", alpha=0.7)
 plt.tight_layout()
-plt.show()
 
 # 그래프 저장
 plt.savefig("water_consumption_simulation_gpt.png", dpi=300)
-
+plt.show()
 # 수치 저장 (GPT 영향 요약)
 with open("gpt_water_impact_summary.txt", "w", encoding="utf-8") as f:
     for year in range(2023, 2031):
