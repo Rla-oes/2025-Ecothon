@@ -32,7 +32,7 @@ gpt_users_by_year = {
 # 3. 샘플 사용자 1인의 연간 평균 탄소배출량 계산 (일간 값 × 365)
 # ----------------------------------
 daily_mean_emission_per_user = gpt_data['total_carbon_emission'].mean()
-annual_mean_emission_per_user = daily_mean_emission_per_user * 365
+annual_mean_emission_per_user = (daily_mean_emission_per_user / 1000) * 365
 print(f"샘플 사용자 연간 평균 탄소배출량: {annual_mean_emission_per_user:.10f} tons")
 
 # 연도별 GPT 총 배출량 계산
@@ -68,17 +68,15 @@ for i, year in enumerate(all_years_flat):
 # ----------------------------------
 plt.figure(figsize=(12, 7))
 plt.plot(all_years, predicted_emission, label='기존 예측 탄소배출량', color='blue', linewidth=2)
-plt.plot(all_years, adjusted_emission, label='GPT 사용 포함 예측', color='red', linestyle='--', linewidth=2)
-plt.scatter(carbon_data['Year'], carbon_data['total_carbon_emission'], color='black', label='실제 측정값', zorder=5)
+plt.plot(all_years, adjusted_emission, label='GPT 사용 포함 예측', color='darkorange', linestyle='-.', linewidth=3, alpha=0.85)
+plt.scatter(carbon_data['Year'], carbon_data['total_carbon_emission'], color='black', label='실제 측정값', zorder=5, s=50)
 
 plt.xlabel('연도', fontsize=13)
 plt.ylabel('탄소배출량 (tons)', fontsize=13)
 plt.title('GPT 사용에 따른 탄소배출량 증가 시뮬레이션 (2022~2030)', fontsize=15)
 plt.legend(fontsize=12)
-plt.grid(True, linestyle='--', alpha=0.7)
+plt.grid(True, linestyle='--', alpha=0.6)
 plt.tight_layout()
-
-# PNG 파일 저장
 plt.savefig("Step4/carbon_emission_simulation_2022_2030.png", dpi=300)
 
 # ----------------------------------
